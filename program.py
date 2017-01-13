@@ -47,14 +47,28 @@ def read_emails_from_file(file):
 
 def facebook_session_init():
     # Place import keys in an ENVIRONMENT VARIABLES and out of source control.
-    my_app_id = os.environ['APP_ID']
-    my_app_secret = os.environ['APP_SECRET']
-    my_access_token_1 = os.environ['ACCESS_TOKEN_1']
-    my_access_token_2 = os.environ['ACCESS_TOKEN_2']
-    proxies = {
-        'http': os.environ['HTTP_PROXY'],
-        'https': os.environ['HTTPS_PROXY']
-    }
+    try:
+        my_app_id = os.environ['APP_ID']
+    except KeyError:
+        print('Please set envrionment variable APP_ID')
+
+    try:
+        my_app_secret = os.environ['APP_SECRET']
+    except KeyError:
+        print('Please set envrionment variable APP_SECRET')
+
+    try:
+        my_access_token_1 = os.environ['ACCESS_TOKEN']
+    except KeyError:
+        print('Please set envrionment variable ACCESS_TOKEN')
+
+    try:
+        proxies = {
+            'http': os.environ['HTTP_PROXY'],
+            'https': os.environ['HTTPS_PROXY']
+        }
+    except KeyError:
+        print('Please set envrionment variable HTTP_PROXY and HTTPS_PROXY')
 
     session = FacebookSession(
         my_app_id,
