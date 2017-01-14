@@ -1,22 +1,23 @@
 import os
 
-from facebookads.api import FacebookAdsApi
-from facebookads import objects
+from itertools import islice
+# from facebookads.api import FacebookAdsApi
+# from facebookads import objects
 
 
 def main():
     print_header()
-    facebook_api = facebook_session_init()
+    # facebook_api = facebook_session_init()
 
     file = get_text_file_from_user()
     if not file:
         print('Please check file path and try again.')
         return
 
-    # TODO: Refactor generator to yeild X number of emails, in array, at a time
     emails = read_emails_from_file(file)
     for email in emails:
-        facebook_ads_api_call(email)
+        print(len(email))
+        # facebook_ads_api_call(email)
 
 
 def print_header():
@@ -27,6 +28,11 @@ def print_header():
 
 
 def get_text_file_from_user():
+    """This function gets the file from the user and checks if it is valid
+
+    Returns:
+        str: Absolute path to file.
+    """
     file = input('What text file would you like to upload? ')
     if not file or not file.strip():
         return None
@@ -36,13 +42,21 @@ def get_text_file_from_user():
     return os.path.abspath(file)
 
 
-def read_emails_from_file(file):
-    """
-    Generator to yield one line instead of storing all lines in memory.
+def read_emails_from_file(file, n=10000):
+    """Generator to yield an arry of n lines from a file.
+
+    Args:
+        file (str): Path to file.
+        n (int): Number of lines to yield.
+    Returns:
+        Generator object
     """
     with open(file, 'rb') as file_in:
-        for line in file_in:
-            yield line
+        while True:
+            next_n_lines = list(islice(file_in, n))
+            if not next_n_lines:
+                break
+            yield next_n_lines
 
 
 def facebook_session_init():
